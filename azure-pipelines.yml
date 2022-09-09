@@ -1,27 +1,34 @@
 name: Docker-CI
 trigger:
-  branches:
-    include:
-      - main
+- main
 
-
-pool:
-  vmImage: 'ubuntu-latest'
+resources:
+- repo: self
 
 variables:
-  ImageName: 'nero20052023/bellyfood-backend:latest'
+    # Container registry service connection established during pipeline creation
+    imageRepository: 'nero20052023/bellyfood-backend'
+    containerRegistry: 'sampleappcontinerregistry.azurecr.io'
+    dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+    tag: 'latest'
+
+    # Agent VM image name
+    vmImageName: 'ubuntu-latest'
 
 stages:
 - stage: Build
-  displayName: Build image
-  jobs:  
-  - job: DockerImage
-    displayName: Build and push Docker image
-    steps:
-    - task: Docker@2
-      inputs:
-        containerRegistry: 'Docker Hub'
-        repository: '$(ImageName)'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: 'latest'
+  displayName: Build and push stage
+  jobs:
+    - job: Build
+      displayName: Build
+      pool:
+        vmImage: $(vmImageName)
+      steps:
+      - task: Docker@2
+        displayName: Build and push an image to container registry
+        inputs:
+          command: buildAndPush
+          repository: $(imageRepository)
+          dockerfile: $(dockerfilePath)
+          containerRegistry: $(dockerRegistryServiceConnection)
+          tags: $(tag)
