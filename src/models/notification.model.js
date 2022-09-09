@@ -11,6 +11,7 @@ const notificationSchema = new Schema(
       enum: ["CUSTOMER", "ADMIN", "SUPERADMIN"],
     },
   },
+
   { collection: "notifications", timestamps: true }
 );
 
