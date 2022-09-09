@@ -195,5 +195,5 @@ app.listen(PORT, async () => {
   await agenda.start();
   // await log.repeatEvery("5 seconds").save();
   await background.repeatEvery("24 hours").save();
-  console.log(`Server listening on port ${PORT}`);
+  console.log(`Server listening on port ${PORT}!`);
 });
